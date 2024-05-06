@@ -88,7 +88,7 @@ class User extends Authenticatable implements FilamentUser, HasName
     }
     public function user_tags(): HasMany 
     {
-        return $this->hasMany(User_tag::class);
+        return $this->hasMany(UserTag::class);
     }
     public function reposts(): HasMany 
     {
@@ -96,7 +96,7 @@ class User extends Authenticatable implements FilamentUser, HasName
     }
     public function post_likes(): HasMany 
     {
-        return $this->hasMany(Post_like::class);
+        return $this->hasMany(PostLike::class);
     }
     public function comments(): HasMany 
     {

@@ -6,19 +6,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Event_tag extends Model
+class PostLike extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'user_id',
         'event_id',
-        'tag_id',
+        'comment_id',
     ];
-    public function tag(): BelongsTo 
+    public function user(): BelongsTo 
     {
-        return $this->belongsTo(Tag::class);
+        return $this->belongsTo(User::class);
     }
     public function event(): BelongsTo 
     {
         return $this->belongsTo(Event::class);
+    }
+    public function comment(): BelongsTo 
+    {
+        return $this->belongsTo(Comment::class);
     }
 }

@@ -15,10 +15,10 @@ class Tag extends Model
 
     public function user_tags(): HasMany 
     {
-        return $this->hasMany(User_tag::class);
+        return $this->hasMany(UserTag::class);
     }
     public function event_tags(): HasMany 
     {
-        return $this->hasMany(Event_tag::class);
+        return $this->hasMany(EventTag::class);
     }
 }
