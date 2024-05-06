@@ -25,9 +25,11 @@ class UserResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('username')
                     ->required()
+                    ->alphaNum()
                     ->maxLength(50),
                 Forms\Components\TextInput::make('nickname')
                     ->maxLength(50)
+                    ->alphaNum()
                     ->default(null),
                 Forms\Components\TextInput::make('email')
                     ->email()
@@ -36,6 +38,11 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->required()
+                    ->confirmed()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('password_confirmation')
+                    ->required()
+                    ->password()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('phone')
                     ->tel()
@@ -52,18 +59,17 @@ class UserResource extends Resource
                     ->default(null),
                 Forms\Components\DatePicker::make('birthday'),
                 Forms\Components\FileUpload::make('avatar')
-                    ->required()
                     ->image()
                     ->maxSize(528)
-                    ->avatar()
-                    ->default('default.jpg'),
+                    ->avatar(),
+                    // ->default('default.png'),
                 Forms\Components\FileUpload::make('banner')
-                    ->required()
                     ->image()
-                    ->maxSize(528)
-                    ->default('defaultbanner.jpg'),
-                // Forms\Components\TextInput::make('type')
-                //     ->required(),
+                    ->maxSize(528),
+                Forms\Components\TextInput::make('type')
+                    ->required()
+                    ->default('user')
+                    ->hidden(),
             ]);
     }
 
@@ -74,6 +80,7 @@ class UserResource extends Resource
                 Tables\Columns\ImageColumn::make('avatar')
                     ->circular()
                     ->visibility('private')
+                    ->checkFileExistence(false)
                     ->label(''),
                 Tables\Columns\TextColumn::make('nickname')
                     ->searchable()

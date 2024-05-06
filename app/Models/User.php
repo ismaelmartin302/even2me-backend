@@ -66,4 +66,19 @@ class User extends Authenticatable implements FilamentUser, HasName
     {
         return true; // _ Cambiar en el futuro para configurar el acceso en produccion
     }
+
+    // Si Avatar o Banner se envia como null, lo modifica a default.png/defaultbanner.png
+    public function setAvatarAttribute($value) {
+        $this->attributes['avatar'] = $value ?? 'default.png';
+    }
+    public function setBannerAttribute($value) {
+        $this->attributes['banner'] = $value ?? 'defaultbanner.png';
+    }
+    // Si Avatar o Banner se saca como null, lo modifica a default.png/defaultbanner.png
+    public function getAvatarAttribute($value) {
+        return $value ?? 'default.png';
+    }
+    public function getBannerAttribute($value) {
+        return $value ?? 'defaultbanner.png';
+    }
 }

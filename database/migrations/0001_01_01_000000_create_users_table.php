@@ -24,8 +24,8 @@ return new class extends Migration
             $table->string('location', 30)->nullable();
             $table->string('website', 100)->nullable();
             $table->date('birthday')->nullable();
-            $table->string('avatar', 255)->default('default.png');
-            $table->string('banner', 255)->default('defaultbanner.png');
+            $table->string('avatar', 255)->nullable()->default('default.png');
+            $table->string('banner', 255)->nullable()->default('defaultbanner.png');
             $table->enum('type', ["user","verified_user","organization","moderator","admin"])->default('user');
             $table->rememberToken();
             $table->timestamps();
