@@ -17,7 +17,9 @@ class EventResource extends Resource
 {
     protected static ?string $model = Event::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+    protected static ?string $activeNavigationIcon = 'heroicon-s-calendar-days';
+    protected static ?string $navigationGroup = 'Main';
 
     public static function form(Form $form): Form
     {
@@ -28,28 +30,25 @@ class EventResource extends Resource
                     ->numeric(),
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(50),
                 Forms\Components\Textarea::make('description')
-                    ->required()
+                    ->maxLength(1200)
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('location')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('price')
-                    ->required()
                     ->numeric()
-                    ->default(0.00)
-                    ->prefix('$'),
+                    ->prefix('€')
+                    ->default(0.00),
                 Forms\Components\TextInput::make('capacity')
-                    ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('current_attendees')
-                    ->required()
                     ->numeric()
                     ->default(0),
                 Forms\Components\TextInput::make('category')
                     ->required()
-                    ->maxLength(100),
+                    ->maxLength(30),
                 Forms\Components\TextInput::make('picture')
                     ->maxLength(255)
                     ->default(null),
@@ -74,7 +73,11 @@ class EventResource extends Resource
                 Tables\Columns\TextColumn::make('location')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('price')
-                    ->money()
+                    ->suffix(fn ($record) => match ($record->price) { // Esto seguro que es optimizable Ismael no me jodas, lo hace del lado del cliente creo y podria hacerlo del lado del server
+                        'Free' => '',
+                        default => '€'
+                    })
+                    ->numeric(2, ",", ".", 2)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('capacity')
                     ->numeric()

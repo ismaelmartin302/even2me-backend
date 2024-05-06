@@ -17,7 +17,9 @@ class FollowerResource extends Resource
 {
     protected static ?string $model = Follower::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static ?string $activeNavigationIcon = 'heroicon-s-user-group';
+    protected static ?string $navigationGroup = 'Many-To-Many';
 
     public static function form(Form $form): Form
     {

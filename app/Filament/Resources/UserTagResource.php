@@ -17,7 +17,9 @@ class UserTagResource extends Resource
 {
     protected static ?string $model = UserTag::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
+    protected static ?string $activeNavigationIcon = 'heroicon-s-tag';
+    protected static ?string $navigationGroup = 'Many-To-Many';
 
     public static function form(Form $form): Form
     {

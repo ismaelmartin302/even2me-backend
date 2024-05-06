@@ -17,8 +17,9 @@ class PostLikeResource extends Resource
 {
     protected static ?string $model = PostLike::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationIcon = 'heroicon-o-heart';
+    protected static ?string $activeNavigationIcon = 'heroicon-s-heart';
+    protected static ?string $navigationGroup = 'Many-To-Many';
     public static function form(Form $form): Form
     {
         return $form
