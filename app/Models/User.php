@@ -8,6 +8,7 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -80,5 +81,29 @@ class User extends Authenticatable implements FilamentUser, HasName
     }
     public function getBannerAttribute($value) {
         return $value ?? 'defaultbanner.png';
+    }
+    public function followers(): HasMany 
+    {
+        return $this->hasMany(Follower::class);
+    }
+    public function user_tags(): HasMany 
+    {
+        return $this->hasMany(User_tag::class);
+    }
+    public function reposts(): HasMany 
+    {
+        return $this->hasMany(Repost::class);
+    }
+    public function post_likes(): HasMany 
+    {
+        return $this->hasMany(Post_like::class);
+    }
+    public function comments(): HasMany 
+    {
+        return $this->hasMany(Comment::class);
+    }
+    public function events(): HasMany 
+    {
+        return $this->hasMany(Event::class);
     }
 }
