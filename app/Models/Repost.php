@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Repost extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'user_id',
+        'event_id',
+    ];
 }

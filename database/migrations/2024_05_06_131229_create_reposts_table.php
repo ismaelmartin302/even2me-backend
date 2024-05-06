@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('reposts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('event_id')->references('id')->on('events');
             $table->timestamps();
         });
     }
