@@ -27,7 +27,8 @@ class EventResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('user_id')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->hidden(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(50),
@@ -39,13 +40,11 @@ class EventResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('price')
                     ->numeric()
-                    ->prefix('€')
-                    ->default(0.00),
+                    ->prefix('€'),
                 Forms\Components\TextInput::make('capacity')
                     ->numeric(),
                 Forms\Components\TextInput::make('current_attendees')
-                    ->numeric()
-                    ->default(0),
+                    ->numeric(),
                 Forms\Components\TextInput::make('category')
                     ->required()
                     ->maxLength(30),
@@ -56,7 +55,8 @@ class EventResource extends Resource
                     ->maxLength(255)
                     ->default(null),
                 Forms\Components\DateTimePicker::make('starts_at')
-                    ->required(),
+                    ->required()
+                    ->default(now()),
                 Forms\Components\DateTimePicker::make('finish_in'),
             ]);
     }
@@ -65,9 +65,9 @@ class EventResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('user.username')
+                    ->sortable()
+                    ->label('User'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('location')

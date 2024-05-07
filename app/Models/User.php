@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements FilamentUser, HasName
+use function Filament\Support\is_app_url;
+
+class User extends Authenticatable implements FilamentUser, HasName, HasAvatar
 {
     use HasFactory, Notifiable;
 
@@ -45,7 +48,10 @@ class User extends Authenticatable implements FilamentUser, HasName
         'password',
         'remember_token',
     ];
-
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return "{$_ENV['APP_URL']}/storage/{$this->avatar}";
+    }
     /**
      * Get the attributes that should be cast.
      *
@@ -105,5 +111,10 @@ class User extends Authenticatable implements FilamentUser, HasName
     public function events(): HasMany 
     {
         return $this->hasMany(Event::class);
+    }
+    public function canAccessFilament(): bool
+    {
+        // return str_ends_with($this->email, '@even2me.com') && $this->hasVerifiedEmail() && ($this->type === 'moderator' || $this-type === 'admin'); // <- Este es el que hay que usar en produccion
+        return $this->type === 'moderator' || $this->type === 'admin';
     }
 }
