@@ -34,16 +34,6 @@ class UserResource extends Resource
         return $form
             ->schema([
                 Section::make([
-                    Forms\Components\FileUpload::make('avatar')
-                        ->image()
-                        ->maxSize(528)
-                        ->avatar(),
-                    // ->default('default.png'),
-                    Forms\Components\FileUpload::make('banner')
-                        ->image()
-                        ->maxSize(528),
-                ]),
-                Section::make([
                     Forms\Components\TextInput::make('username')
                         ->required()
                         ->alphaNum()
@@ -61,7 +51,20 @@ class UserResource extends Resource
                         ->required()
                         ->password()
                         ->maxLength(255),
-                ]),
+                    Section::make([
+                        Forms\Components\FileUpload::make('avatar')
+                            ->image()
+                            ->maxSize(528)
+                            ->deletable(false)
+                            ->avatar(),
+                        // ->default('default.png'),
+                        Forms\Components\FileUpload::make('banner')
+                            ->image()
+                            ->deletable(false)
+                            ->visibility('private')
+                            ->maxSize(528),
+                    ])->columns(2),
+                ])->heading('Required')->columns(2),
                 Section::make([
                     Forms\Components\TextInput::make('nickname')
                         ->maxLength(40)
@@ -80,13 +83,22 @@ class UserResource extends Resource
                     Forms\Components\TextInput::make('website')
                         ->maxLength(100)
                         ->default(null),
-                    Forms\Components\DatePicker::make('birthday'),
-
-                    Forms\Components\TextInput::make('type')
+                    Forms\Components\DatePicker::make('birthday')
+                        ->native(false),
+                ])->heading('Personal Information'),
+                Section::make([
+                    Forms\Components\Select::make('type')
+                        ->options([
+                            'user' => 'User',
+                            'verified_user' => 'Verified',
+                            'organization' => 'Organization',
+                            'moderator' => 'Moderator',
+                            'admin' => 'Admin',
+                        ])
+                        ->native(false)
+                        ->default('user')
                         ->required()
-                        ->default('user') // <- esto creo que no sirve de nada, funciona gracias a que en la base de datos tiene puesto user como default CREO
-                        ->hidden(),
-                ]),
+                ])->heading(''),
             ]);
     }
 
@@ -104,6 +116,18 @@ class UserResource extends Resource
                     Stack::make([
                         Tables\Columns\TextColumn::make('username')
                             ->searchable(),
+                    ]),
+                    Stack::make([
+                        Tables\Columns\TextColumn::make('type')
+                            ->searchable()
+                            ->badge()
+                            ->color(fn (string $state): string => match ($state) {
+                                'user' => 'gray',
+                                'verified_user' => 'success',
+                                'organization' => 'warning',
+                                'moderator' => 'info',
+                                'admin' => 'danger',
+                            }),
                     ]),
                 ]),
                 Panel::make([
