@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Event extends Model
@@ -70,17 +71,18 @@ class Event extends Model
         }
     }
 
-    public function event_tags(): HasMany 
+    public function tags(): BelongsToMany 
     {
-        return $this->hasMany(EventTag::class);
+        return $this->belongsToMany(Tag::class);
     }
-    public function reposts(): HasMany 
+    public function reposts(): BelongsToMany 
     {
-        return $this->hasMany(Repost::class);
+        return $this->belongsToMany(User::class, 'reposts', 'event_id', 'user_id');
     }
-    public function post_likes(): HasMany 
+    
+    public function likes(): BelongsToMany 
     {
-        return $this->hasMany(PostLike::class);
+        return $this->belongsToMany(User::class, 'likes', 'event_id', 'user_id');
     }
     public function comments(): HasMany 
     {

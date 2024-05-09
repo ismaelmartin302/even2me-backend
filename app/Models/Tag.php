@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Tag extends Model
@@ -13,12 +14,12 @@ class Tag extends Model
         'name',
     ];
 
-    public function user_tags(): HasMany 
+    public function users(): BelongsToMany 
     {
-        return $this->hasMany(UserTag::class);
+        return $this->belongsToMany(User::class);
     }
-    public function event_tags(): HasMany 
+    public function events(): BelongsToMany 
     {
-        return $this->hasMany(EventTag::class);
+        return $this->belongsToMany(Event::class);
     }
 }

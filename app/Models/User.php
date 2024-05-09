@@ -9,6 +9,7 @@ use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -92,17 +93,21 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAvatar
     {
         return $this->hasMany(Follower::class);
     }
-    public function user_tags(): HasMany 
+    public function tags(): BelongsToMany 
     {
-        return $this->hasMany(UserTag::class);
+        return $this->belongsToMany(Tag::class);
     }
-    public function reposts(): HasMany 
+    public function repost(): BelongsToMany 
     {
-        return $this->hasMany(Repost::class);
+        return $this->belongsToMany(Event::class, 'reposts', 'user_id', 'event_id');
     }
-    public function post_likes(): HasMany 
+    public function likedEvents(): BelongsToMany 
     {
-        return $this->hasMany(PostLike::class);
+        return $this->belongsToMany(Event::class, 'likes', 'user_id', 'event_id');
+    }
+    public function likedComments(): BelongsToMany 
+    {
+        return $this->belongsToMany(Comment::class, 'comment_likes', 'user_id', 'comment_id');
     }
     public function comments(): HasMany 
     {

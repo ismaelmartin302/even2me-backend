@@ -15,7 +15,6 @@ return new class extends Migration
 
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->index('user_id');
             $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->string('name', 50);
             $table->text('description')->nullable();
