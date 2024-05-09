@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('category', 30);
             $table->string('picture', 255)->nullable();
             $table->string('website', 255)->nullable();
+            $table->boolean('is_active')->default(true);
             $table->dateTime('starts_at');
             $table->dateTime('finish_in')->nullable();
             $table->timestamp('created_at')->useCurrent();
