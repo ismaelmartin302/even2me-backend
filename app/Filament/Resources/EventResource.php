@@ -56,8 +56,11 @@ class EventResource extends Resource
                     ->default(null),
                 Forms\Components\DateTimePicker::make('starts_at')
                     ->required()
-                    ->default(now()),
-                Forms\Components\DateTimePicker::make('finish_in'),
+                    ->default(now())
+                    ->native(false),
+                Forms\Components\DateTimePicker::make('finish_in')
+                    ->native(false),
+
             ]);
     }
 

@@ -27,10 +27,12 @@ class CommentResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('user_id')
                     ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('event_id')
+                    ->numeric()
+                    ->hidden(),
+                Forms\Components\Select::make('event_id')
                     ->required()
-                    ->numeric(),
+                    ->preload()
+                    ->relationship(name: 'event', titleAttribute: 'name'),
                 Forms\Components\Textarea::make('content')
                     ->required()
                     ->columnSpanFull(),
@@ -41,8 +43,7 @@ class CommentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('user.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('event_id')
                     ->numeric()
