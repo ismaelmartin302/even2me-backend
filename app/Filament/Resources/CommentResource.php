@@ -43,7 +43,7 @@ class CommentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')
+                Tables\Columns\TextColumn::make('user.nickname')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('event_id')
                     ->numeric()

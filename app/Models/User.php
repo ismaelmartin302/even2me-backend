@@ -75,20 +75,39 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAvatar
         return true; // _ Cambiar en el futuro para configurar el acceso en produccion
     }
 
-    // Si Avatar o Banner se envia como null, lo modifica a default.png/defaultbanner.png
+
+    
+    /* MUTACIONES DE ATRIBUTOS ----------------------------------- */
     public function setAvatarAttribute($value) {
         $this->attributes['avatar'] = $value ?? 'default.png';
+    }
+    public function getAvatarAttribute($value) {
+        return $value ?? 'default.png';
     }
     public function setBannerAttribute($value) {
         $this->attributes['banner'] = $value ?? 'defaultbanner.png';
     }
-    // Si Avatar o Banner se saca como null, lo modifica a default.png/defaultbanner.png
-    public function getAvatarAttribute($value) {
-        return $value ?? 'default.png';
-    }
     public function getBannerAttribute($value) {
         return $value ?? 'defaultbanner.png';
     }
+    public function setNicknameAttribute($value) {
+        $this->attributes['nickname'] = $value ?? $this->attributes['username'];
+    }
+    public function getNicknameAttribute($value) {
+        return $value ?? $this->attributes['username'];
+    }
+
+
+    
+    public function canAccessFilament(): bool
+    {
+        // return str_ends_with($this->email, '@even2me.com') && $this->hasVerifiedEmail() && ($this->type === 'moderator' || $this-type === 'admin'); // <- Este es el que hay que usar en produccion
+        return $this->type === 'moderator' || $this->type === 'admin';
+    }
+
+
+
+    /* RELACIONES -----------------------------------------------------------*/
     public function followers(): HasMany 
     {
         return $this->hasMany(Follower::class);
@@ -116,10 +135,5 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAvatar
     public function events(): HasMany 
     {
         return $this->hasMany(Event::class);
-    }
-    public function canAccessFilament(): bool
-    {
-        // return str_ends_with($this->email, '@even2me.com') && $this->hasVerifiedEmail() && ($this->type === 'moderator' || $this-type === 'admin'); // <- Este es el que hay que usar en produccion
-        return $this->type === 'moderator' || $this->type === 'admin';
     }
 }
