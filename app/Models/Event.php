@@ -70,6 +70,13 @@ class Event extends Model
             $this->attributes['current_attendees'] = 0;
         }
     }
+    public function getCurrentAttendeesAttribute($value) {
+        if ($value > $this->attributes['capacity']) {
+            return $this->attributes['capacity'];
+        } else {
+            return $value;
+        }
+    }
 
     public function tags(): BelongsToMany 
     {

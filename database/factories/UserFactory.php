@@ -35,7 +35,9 @@ class UserFactory extends Factory
             'website' => fake()->url(),
             'birthday' => fake()->date(),
             // 'avatar' => fake()->imageUrl(180, 180),
+            // 'avatar' => 'https://picsum.photos/440',
             // 'banner' => fake()->imageUrl(),
+            // 'banner' => 'https://picsum.photos/900/338',
             'type' => fake()->randomElement(["user","verified_user","organization","moderator","admin"]),
             'remember_token' => Str::random(10),
         ];

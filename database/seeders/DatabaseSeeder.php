@@ -23,9 +23,12 @@ class DatabaseSeeder extends Seeder
         Tag::factory(10)->create();
         Follower::factory(30)->create();
 
-        User::factory()->create([
-            'username' => 'TestUser',
-            'email' => 'test@example.com',
-        ]);
+        $existingAdmin = User::where('email', 'admin@example.com')->exists();
+        if (!$existingAdmin) {
+            User::factory()->create([
+                'username' => 'TestUser',
+                'email' => 'admin@example.com',
+            ]);
+        }
     }
 }
