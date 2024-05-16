@@ -20,6 +20,7 @@ use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -36,7 +37,7 @@ class UserResource extends Resource
                 Section::make([
                     Forms\Components\TextInput::make('username')
                         ->required()
-                        ->alphaNum()
+                        ->alphaDash()
                         ->maxLength(40),
                     Forms\Components\TextInput::make('email')
                         ->email()
@@ -46,6 +47,8 @@ class UserResource extends Resource
                         ->password()
                         ->required()
                         ->confirmed()
+                        ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                        ->dehydrated(fn ($state) => filled($state))
                         ->maxLength(255),
                     Forms\Components\TextInput::make('password_confirmation')
                         ->required()
@@ -72,7 +75,7 @@ class UserResource extends Resource
                         ->default(null),
                     Forms\Components\TextInput::make('phone')
                         ->tel()
-                        ->maxLength(9)
+                        ->maxLength(15)
                         ->default(null),
                     Forms\Components\TextInput::make('biography')
                         ->maxLength(160)
@@ -107,12 +110,11 @@ class UserResource extends Resource
         return $table
             ->columns([
                 LayoutSplit::make([
-                    LayoutSplit::make([
                         Tables\Columns\ImageColumn::make('avatar')
                             ->circular()
                             ->visibility('private')
+                            ->grow(false)
                             ->checkFileExistence(false),
-                    ]),
                     Stack::make([
                         Tables\Columns\TextColumn::make('username')
                             ->searchable(),
@@ -121,6 +123,7 @@ class UserResource extends Resource
                         Tables\Columns\TextColumn::make('type')
                             ->searchable()
                             ->badge()
+                            ->alignEnd()
                             ->color(fn (string $state): string => match ($state) {
                                 'user' => 'gray',
                                 'verified_user' => 'success',
@@ -139,7 +142,11 @@ class UserResource extends Resource
                         Tables\Columns\TextColumn::make('location')
                             ->icon('heroicon-m-map-pin'),
                         Tables\Columns\TextColumn::make('website')
-                            ->icon('heroicon-m-globe-alt'),
+                            ->url(fn ($state) => $state, true)
+                            ->formatStateUsing(fn () => 'Link')
+                            ->color('info')
+                            ->iconColor('gray')
+                            ->icon('heroicon-m-link'),
                         Tables\Columns\TextColumn::make('birthday')
                             ->date()
                             ->icon('heroicon-m-calendar'),
@@ -176,7 +183,7 @@ class UserResource extends Resource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
-            // 'view' => Pages\ViewUser::route('/{record}'),
+            'view' => Pages\ViewUser::route('/{record}'),
             // 'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }

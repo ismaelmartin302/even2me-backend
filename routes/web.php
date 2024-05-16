@@ -8,3 +8,5 @@ Route::get('/', function () {
 
 Route::get('/login', function () { return redirect('/admin/login'); })->name('login');
 Route::get('/register', function () { return redirect('/admin/register'); })->name('register');
+
+Route::get('/admin/users/{user}')->name('users.view');

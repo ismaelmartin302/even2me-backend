@@ -5,9 +5,11 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\EventResource\Pages;
 use App\Filament\Resources\EventResource\RelationManagers;
 use App\Models\Event;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\Alignment;
 use Filament\Tables;
 use Filament\Tables\Columns\Layout\Panel;
 use Filament\Tables\Columns\Layout\Split;
@@ -73,11 +75,15 @@ class EventResource extends Resource
                 Stack::make([
                     Split::make([
                         Tables\Columns\ImageColumn::make('user.avatar')
+                            ->grow(false)
                             ->circular(),
-                        Stack::make([
+                        Split::make([
                             Tables\Columns\TextColumn::make('user.nickname')
-                            ->sortable()
-                            ->label('User'),
+                                ->action(function (Event $record): void {
+                                    redirect()->route('users.view', $record->user_id); // <- esto va un poco lento la verdad, optimizable FIJO, url va mas rapido pero me jode el layout
+                                }) 
+                                // ->url(fn (Event $record): string => route('users.view' , ['user' => $record]))
+                                ->label('User'),
                         ]),
                     ]),
                     Tables\Columns\TextColumn::make('name')
@@ -107,13 +113,6 @@ class EventResource extends Resource
                         Tables\Columns\TextColumn::make('description')
                         ->searchable(),
                         Split::make([
-
-                            Tables\Columns\TextColumn::make('user.nickname')
-                                ->sortable()
-                                ->label('User'),
-                        ]),
-                        Split::make([
-                            //Fecha
                             Tables\Columns\TextColumn::make('price')
                                 ->suffix(fn ($record) => match ($record->price) { // Esto seguro que es optimizable Ismael no me jodas, lo hace del lado del cliente creo y podria hacerlo del lado del server
                                     'Free' => '',
@@ -122,7 +121,7 @@ class EventResource extends Resource
                                 ->color('success')
                                 ->numeric(2, ",", ".", 2)
                                 ->sortable(),
-                                Tables\Columns\TextColumn::make('capacity')
+                            Tables\Columns\TextColumn::make('capacity')
                                 ->icon('heroicon-s-user-group')
                                 ->formatStateUsing(function ($state, Event $event) {
                                     if ($state != 'Unlimited' && $event->current_attendees < $state) {
@@ -150,15 +149,6 @@ class EventResource extends Resource
                         ]),
                     ]),
                 ])->collapsible(),
-                Stack::make([
-                    Stack::make([
-
-
-                    ]),
-
-
-                
-                ]),
             ])
             ->contentGrid([
                 'md' => 2,
