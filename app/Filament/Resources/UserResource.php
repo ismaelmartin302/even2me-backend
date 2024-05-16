@@ -13,6 +13,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Split;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Columns\Layout\Panel;
 use Filament\Tables\Columns\Layout\Split as LayoutSplit;
@@ -45,14 +46,16 @@ class UserResource extends Resource
                         ->maxLength(255),
                     Forms\Components\TextInput::make('password')
                         ->password()
-                        ->required()
+                        // ->required()
                         ->confirmed()
+                        ->revealable()
                         ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                         ->dehydrated(fn ($state) => filled($state))
                         ->maxLength(255),
                     Forms\Components\TextInput::make('password_confirmation')
-                        ->required()
+                        // ->required()
                         ->password()
+                        ->revealable()
                         ->maxLength(255),
                     Section::make([
                         Forms\Components\FileUpload::make('avatar')
@@ -71,7 +74,7 @@ class UserResource extends Resource
                 Section::make([
                     Forms\Components\TextInput::make('nickname')
                         ->maxLength(40)
-                        ->alphaNum()
+                        ->ascii()
                         ->default(null),
                     Forms\Components\TextInput::make('phone')
                         ->tel()
@@ -117,6 +120,7 @@ class UserResource extends Resource
                             ->checkFileExistence(false),
                     Stack::make([
                         Tables\Columns\TextColumn::make('username')
+                            ->weight(FontWeight::Bold)
                             ->searchable(),
                     ]),
                     Stack::make([
@@ -133,13 +137,25 @@ class UserResource extends Resource
                             }),
                     ]),
                 ]),
-                Panel::make([
+                Stack::make([
+                    Stack::make([
+                        Tables\Columns\TextColumn::make('biography')
+                            ->fontFamily('italic')
+                            ->color('gray'),
+                    ]),
+                ]),
+                Stack::make([
                     Stack::make([
                         Tables\Columns\TextColumn::make('email')
+                            ->color('gray')
+                            ->copyable()
                             ->icon('heroicon-m-envelope'),
                         Tables\Columns\TextColumn::make('phone')
+                            ->color('gray')
+                            ->copyable()
                             ->icon('heroicon-m-phone'),
                         Tables\Columns\TextColumn::make('location')
+                            ->color('gray')
                             ->icon('heroicon-m-map-pin'),
                         Tables\Columns\TextColumn::make('website')
                             ->url(fn ($state) => $state, true)
@@ -149,19 +165,19 @@ class UserResource extends Resource
                             ->icon('heroicon-m-link'),
                         Tables\Columns\TextColumn::make('birthday')
                             ->date()
+                            ->color('gray')
                             ->icon('heroicon-m-calendar'),
                     ]),
                 ])->collapsible(),
             ])
             ->contentGrid([
-                'md' => 2,
-                'xl' => 3,
+                'xl' => 2,
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                // Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

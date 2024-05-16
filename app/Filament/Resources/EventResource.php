@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\EventResource\Pages;
 use App\Filament\Resources\EventResource\RelationManagers;
 use App\Models\Event;
-use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -62,8 +61,11 @@ class EventResource extends Resource
                 Forms\Components\DateTimePicker::make('starts_at')
                     ->required()
                     ->default(now())
+                    ->seconds(false)
+                    ->timezone('Europe/Madrid')
                     ->native(false),
                 Forms\Components\DateTimePicker::make('finish_in')
+                    ->seconds(false)
                     ->native(false),
             ]);
     }

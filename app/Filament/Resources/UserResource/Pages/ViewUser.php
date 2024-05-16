@@ -14,6 +14,11 @@ class ViewUser extends ViewRecord
     {
         return [
             Actions\EditAction::make(),
+            Actions\DeleteAction::make(),
         ];
+    }
+    public function getTitle(): string
+    {
+        return __($this->record->nickname);
     }
 }

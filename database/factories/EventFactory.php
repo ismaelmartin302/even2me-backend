@@ -32,7 +32,7 @@ class EventFactory extends Factory
             'current_attendees' => $current_attendees,
             'category' => fake()->word(),
             // 'picture' => fake()->imageUrl(),
-            'picture' => 'https://picsum.photos/400',
+            // 'picture' => 'https://picsum.photos/400',
             'website' => fake()->url(),
             'starts_at' =>  $starts_at,
             'finish_in' =>  $finish_in,
