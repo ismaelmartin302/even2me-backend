@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('phone', 15)->unique()->nullable();
             $table->string('biography', 160)->nullable();
             $table->string('location', 100)->nullable();
-            $table->string('website', 100)->nullable();
+            $table->string('website', 255)->nullable();
             $table->date('birthday')->nullable();
             $table->string('avatar', 255)->nullable()->default('default.png');
             $table->string('banner', 255)->nullable()->default('defaultbanner.png');
