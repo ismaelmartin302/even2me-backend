@@ -2,16 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CommentResource\Pages;
-use App\Filament\Resources\CommentResource\RelationManagers;
+use App\Filament\Resources\CommentResource\Pages\CreateComment;
+use App\Filament\Resources\CommentResource\Pages\EditComment;
+use App\Filament\Resources\CommentResource\Pages\ListComments;
+use App\Filament\Resources\CommentResource\Pages\ViewComment;
 use App\Models\Comment;
-use Filament\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CommentResource extends Resource
 {
@@ -25,15 +31,15 @@ class CommentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
+                TextInput::make('user_id')
                     ->required()
                     ->numeric()
                     ->hidden(),
-                Forms\Components\Select::make('event_id')
+                Select::make('event_id')
                     ->required()
                     ->preload()
                     ->relationship(name: 'event', titleAttribute: 'name'),
-                Forms\Components\Textarea::make('content')
+                Textarea::make('content')
                     ->required()
                     ->columnSpanFull(),
             ]);
@@ -43,48 +49,38 @@ class CommentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.nickname')
+                TextColumn::make('user.nickname')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('event_id')
+                TextColumn::make('event_id')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListComments::route('/'),
-            'create' => Pages\CreateComment::route('/create'),
-            'view' => Pages\ViewComment::route('/{record}'),
-            'edit' => Pages\EditComment::route('/{record}/edit'),
+            'index' => ListComments::route('/'),
+            'create' => CreateComment::route('/create'),
+            'view' => ViewComment::route('/{record}'),
+            'edit' => EditComment::route('/{record}/edit'),
         ];
     }
 }

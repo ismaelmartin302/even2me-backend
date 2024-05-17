@@ -2,20 +2,26 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\EventResource\Pages;
-use App\Filament\Resources\EventResource\RelationManagers;
+use App\Filament\Resources\EventResource\Pages\CreateEvent;
+use App\Filament\Resources\EventResource\Pages\EditEvent;
+use App\Filament\Resources\EventResource\Pages\ListEvents;
+use App\Filament\Resources\EventResource\Pages\ViewEvent;
 use App\Models\Event;
-use Filament\Forms;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Support\Enums\Alignment;
-use Filament\Tables;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Panel;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class EventResource extends Resource
 {
@@ -29,42 +35,42 @@ class EventResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
+                TextInput::make('user_id')
                     ->required()
                     ->numeric()
                     ->hidden(),
-                Forms\Components\TextInput::make('name')
+                TextInput::make('name')
                     ->required()
                     ->maxLength(50),
-                Forms\Components\Textarea::make('description')
+                Textarea::make('description')
                     ->maxLength(1200)
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('location')
+                TextInput::make('location')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('price')
+                TextInput::make('price')
                     ->numeric()
                     ->suffix('€'),
-                Forms\Components\TextInput::make('capacity')
+                TextInput::make('capacity')
                     ->numeric(),
-                Forms\Components\TextInput::make('current_attendees')
+                TextInput::make('current_attendees')
                     ->numeric(),
-                Forms\Components\TextInput::make('category')
+                TextInput::make('category')
                     ->required()
                     ->maxLength(30),
-                Forms\Components\TextInput::make('picture')
+                TextInput::make('picture')
                     ->maxLength(255)
                     ->default(null),
-                Forms\Components\TextInput::make('website')
+                TextInput::make('website')
                     ->maxLength(255)
                     ->default(null),
-                Forms\Components\DateTimePicker::make('starts_at')
+                DateTimePicker::make('starts_at')
                     ->required()
                     ->default(now())
                     ->seconds(false)
                     ->timezone('Europe/Madrid')
                     ->native(false),
-                Forms\Components\DateTimePicker::make('finish_in')
+                DateTimePicker::make('finish_in')
                     ->seconds(false)
                     ->native(false),
             ]);
@@ -76,11 +82,11 @@ class EventResource extends Resource
             ->columns([
                 Stack::make([
                     Split::make([
-                        Tables\Columns\ImageColumn::make('user.avatar')
+                        ImageColumn::make('user.avatar')
                             ->grow(false)
                             ->circular(),
                         Split::make([
-                            Tables\Columns\TextColumn::make('user.nickname')
+                            TextColumn::make('user.nickname')
                                 ->action(function (Event $record): void {
                                     redirect()->route('users.view', $record->user_id); // <- esto va un poco lento la verdad, optimizable FIJO, url va mas rapido pero me jode el layout
                                 }) 
@@ -88,17 +94,17 @@ class EventResource extends Resource
                                 ->label('User'),
                         ]),
                     ]),
-                    Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                    Tables\Columns\ImageColumn::make('picture')
+                    TextColumn::make('name')
+                        ->searchable(),
+                    ImageColumn::make('picture')
                         ->searchable()
                         ->height('100%')
                         ->width('100%')
                         ->extraImgAttributes(['loading' => 'lazy']),
-                    Tables\Columns\TextColumn::make('location')
-                    ->searchable()
-                    ->icon('heroicon-s-map-pin'),
-                    Tables\Columns\TextColumn::make('starts_at')
+                    TextColumn::make('location')
+                        ->searchable()
+                        ->icon('heroicon-s-map-pin'),
+                    TextColumn::make('starts_at')
                         ->icon('heroicon-s-calendar')
                         ->formatStateUsing(function ($state, Event $event) {
                             $startsAt = $event->starts_at->format('d/m H:i');
@@ -112,10 +118,10 @@ class EventResource extends Resource
                 ])->space(3),
                 Panel::make([
                     Stack::make([
-                        Tables\Columns\TextColumn::make('description')
-                        ->searchable(),
+                        TextColumn::make('description')
+                            ->searchable(),
                         Split::make([
-                            Tables\Columns\TextColumn::make('price')
+                            TextColumn::make('price')
                                 ->suffix(fn ($record) => match ($record->price) { // Esto seguro que es optimizable Ismael no me jodas, lo hace del lado del cliente creo y podria hacerlo del lado del server
                                     'Free' => '',
                                     default => '€'
@@ -123,7 +129,7 @@ class EventResource extends Resource
                                 ->color('success')
                                 ->numeric(2, ",", ".", 2)
                                 ->sortable(),
-                            Tables\Columns\TextColumn::make('capacity')
+                            TextColumn::make('capacity')
                                 ->icon('heroicon-s-user-group')
                                 ->formatStateUsing(function ($state, Event $event) {
                                     if ($state != 'Unlimited' && $event->current_attendees < $state) {
@@ -155,34 +161,24 @@ class EventResource extends Resource
             ->contentGrid([
                 'md' => 2,
             ])
-            ->filters([
-                //
-            ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListEvents::route('/'),
-            'create' => Pages\CreateEvent::route('/create'),
-            'view' => Pages\ViewEvent::route('/{record}'),
-            'edit' => Pages\EditEvent::route('/{record}/edit'),
+            'index' => ListEvents::route('/'),
+            'create' => CreateEvent::route('/create'),
+            'view' => ViewEvent::route('/{record}'),
+            'edit' => EditEvent::route('/{record}/edit'),
         ];
     }
 }

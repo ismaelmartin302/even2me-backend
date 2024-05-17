@@ -2,17 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\FollowerResource\Pages;
-use App\Filament\Resources\FollowerResource\RelationManagers;
+use App\Filament\Resources\FollowerResource\Pages\CreateFollower;
+use App\Filament\Resources\FollowerResource\Pages\EditFollower;
+use App\Filament\Resources\FollowerResource\Pages\ListFollowers;
+use App\Filament\Resources\FollowerResource\Pages\ViewFollower;
 use App\Models\Follower;
-use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class FollowerResource extends Resource
 {
@@ -26,10 +28,10 @@ class FollowerResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('follower_id')
+                TextInput::make('follower_id')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('following_id')
+                TextInput::make('following_id')
                     ->required()
                     ->numeric(),
             ]);
@@ -40,40 +42,30 @@ class FollowerResource extends Resource
         return $table
             ->columns([
                 Split::make([
-                    Tables\Columns\TextColumn::make('follower.username')
+                    TextColumn::make('follower.username')
                         ->badge(),
                 ]),
-            ])->defaultGroup('following.username')
+            ])
+            ->defaultGroup('following.username')
             ->contentGrid([
                 'sm' => 2,
                 'md' => 3,
                 'xl' => 4,
             ])
-            ->filters([
-                //
-            ])
-
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListFollowers::route('/'),
-            'create' => Pages\CreateFollower::route('/create'),
-            'view' => Pages\ViewFollower::route('/{record}'),
-            'edit' => Pages\EditFollower::route('/{record}/edit'),
+            'index' => ListFollowers::route('/'),
+            'create' => CreateFollower::route('/create'),
+            'view' => ViewFollower::route('/{record}'),
+            'edit' => EditFollower::route('/{record}/edit'),
         ];
     }
 }
