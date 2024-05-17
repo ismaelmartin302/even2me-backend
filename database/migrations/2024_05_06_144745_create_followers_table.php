@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('followers', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('follower_id')->references('id')->on('users');
             $table->foreignId('following_id')->references('id')->on('users');
             $table->timestamps();

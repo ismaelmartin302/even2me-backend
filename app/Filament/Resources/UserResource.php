@@ -2,26 +2,34 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
-use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Components\Card;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Split;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Support\Enums\FontWeight;
+use App\Models\User;
 use Filament\Tables;
-use Filament\Tables\Columns\Layout\Panel;
-use Filament\Tables\Columns\Layout\Split as LayoutSplit;
-use Filament\Tables\Columns\Layout\Stack;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Infolists\Infolist;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Split;
 use Illuminate\Support\Facades\Hash;
+use Filament\Forms\Components\Section;
+use Filament\Support\Enums\FontWeight;
+use Filament\Forms\Components\Fieldset;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Tables\Columns\Layout\Panel;
+use Filament\Tables\Columns\Layout\Stack;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Support\Enums\VerticalAlignment;
+use App\Filament\Resources\UserResource\Pages;
+use Filament\Infolists\Components\RepeatableEntry;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\Layout\Split as LayoutSplit;
+use App\Filament\Resources\UserResource\RelationManagers;
+use Filament\Infolists\Components\Split as ComponentsSplit;
+use Filament\Infolists\Components\Section as ComponentsSection;
 
 class UserResource extends Resource
 {
@@ -196,6 +204,59 @@ class UserResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {        
+        $infolist = Infolist::make()
+
+            ->schema([
+                ComponentsSection::make('Followers')
+                    ->schema([
+                        RepeatableEntry::make('followers')
+                            ->label('')
+                            ->schema([
+                                ComponentsSplit::make([
+                                    ImageEntry::make('follower.avatar')
+                                        ->label('')
+                                        ->height('5em')
+                                        ->width('5em')
+                                        ->grow(false),
+                                    TextEntry::make('follower.username')
+                                        ->label(''),
+                                ])->verticalAlignment(VerticalAlignment::Center),
+                            ]),
+                    ])
+                    ->collapsible()
+                    ->columns([
+                        'md' => 2,
+                        'xl' => 3,
+                    ]),
+                ComponentsSection::make('Followings')
+                    ->label('')
+                    ->schema([
+                        RepeatableEntry::make('followings')
+                            ->schema([
+                                ComponentsSplit::make([
+                                    ImageEntry::make('following.avatar')
+                                        ->label('')
+                                        ->height('5em')
+                                        ->width('5em')
+                                        ->grow(false),
+                                    TextEntry::make('following.username')
+                                        ->label(''),
+                                ])->verticalAlignment(VerticalAlignment::Center),
+                            ]),
+                    ])
+                    ->collapsible()
+                    ->columns([
+                        'md' => 2,
+                        'xl' => 3,
+                    ]),
+            ]);
+
+
+            return $infolist;
+    }
+    
     public static function getRelations(): array
     {
         return [
