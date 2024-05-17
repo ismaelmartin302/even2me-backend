@@ -108,9 +108,13 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAvatar
 
 
     /* RELACIONES -----------------------------------------------------------*/
+    public function followings(): HasMany 
+    {
+        return $this->hasMany(Follower::class, 'follower_id', 'id');
+    }
     public function followers(): HasMany 
     {
-        return $this->hasMany(Follower::class);
+        return $this->hasMany(Follower::class, 'following_id', 'id');
     }
     public function tags(): BelongsToMany 
     {

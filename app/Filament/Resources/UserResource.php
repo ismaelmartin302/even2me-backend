@@ -112,38 +112,47 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                LayoutSplit::make([
-                        Tables\Columns\ImageColumn::make('avatar')
-                            ->circular()
-                            ->visibility('private')
-                            ->grow(false)
-                            ->checkFileExistence(false),
-                    Stack::make([
-                        Tables\Columns\TextColumn::make('username')
-                            ->weight(FontWeight::Bold)
-                            ->searchable(),
-                    ]),
-                    Stack::make([
-                        Tables\Columns\TextColumn::make('type')
-                            ->searchable()
-                            ->badge()
-                            ->alignEnd()
-                            ->color(fn (string $state): string => match ($state) {
-                                'user' => 'gray',
-                                'verified_user' => 'success',
-                                'organization' => 'warning',
-                                'moderator' => 'info',
-                                'admin' => 'danger',
-                            }),
-                    ]),
-                ]),
                 Stack::make([
-                    Stack::make([
-                        Tables\Columns\TextColumn::make('biography')
-                            ->fontFamily('italic')
-                            ->color('gray'),
+                    LayoutSplit::make([
+                            Tables\Columns\ImageColumn::make('avatar')
+                                ->circular()
+                                ->visibility('private')
+                                ->grow(false)
+                                ->checkFileExistence(false),
+                        Stack::make([
+                            Tables\Columns\TextColumn::make('username')
+                                ->weight(FontWeight::Bold)
+                                ->searchable(),
+                        ]),
+                        Stack::make([
+                            Tables\Columns\TextColumn::make('type')
+                                ->searchable()
+                                ->badge()
+                                ->alignEnd()
+                                ->color(fn (string $state): string => match ($state) {
+                                    'user' => 'gray',
+                                    'verified_user' => 'success',
+                                    'organization' => 'warning',
+                                    'moderator' => 'info',
+                                    'admin' => 'danger',
+                                }),
+                        ]),
                     ]),
-                ]),
+                    Stack::make([
+                        Stack::make([
+                            LayoutSplit::make([
+                                Tables\Columns\TextColumn::make('followings_count')->counts('followings')
+                                    ->suffix(' Following')
+                                    ->grow(false),
+                                Tables\Columns\TextColumn::make('followers_count')->counts('followers')
+                                    ->suffix(' Followers'),
+                            ]),
+                            Tables\Columns\TextColumn::make('biography')
+                                ->fontFamily('italic')
+                                ->color('gray'),
+                        ])->space(3),
+                    ]),
+                ])->space(2),
                 Stack::make([
                     Stack::make([
                         Tables\Columns\TextColumn::make('email')
