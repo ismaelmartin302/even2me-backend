@@ -2,26 +2,36 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\EventResource\Pages\CreateEvent;
-use App\Filament\Resources\EventResource\Pages\EditEvent;
-use App\Filament\Resources\EventResource\Pages\ListEvents;
-use App\Filament\Resources\EventResource\Pages\ViewEvent;
 use App\Models\Event;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
+use App\Models\Comment;
 use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Support\Enums\FontWeight;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Panel;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Support\Enums\VerticalAlignment;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\Split as InfoSplit;
+use App\Filament\Resources\EventResource\Pages\EditEvent;
+use App\Filament\Resources\EventResource\Pages\ViewEvent;
+use Filament\Infolists\Components\Section as InfoSection;
+use App\Filament\Resources\EventResource\Pages\ListEvents;
+use App\Filament\Resources\EventResource\Pages\CreateEvent;
 
 class EventResource extends Resource
 {
@@ -171,7 +181,125 @@ class EventResource extends Resource
                 ]),
             ]);
     }
-
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                InfoSection::make('Event Details')
+                    ->schema([
+                        InfoSplit::make([
+                            ImageEntry::make('user.avatar')
+                                ->label('')
+                                ->circular()
+                                ->grow(false)
+                                ->url(fn (Event $record): string => route('users.view', ['user' => $record->user_id])),
+                            TextEntry::make('user.nickname')
+                                ->label('')
+                                ->url(fn (Event $record): string => route('users.view', ['user' => $record->user_id]))
+                                ->weight(FontWeight::Bold),
+                        ])->verticalAlignment(VerticalAlignment::Center),
+    
+                        Section::make([
+                            InfoSplit::make([
+                                TextEntry::make('name')
+                                    ->label('')
+                                    ->weight(FontWeight::Bold),
+                                TextEntry::make('category')
+                                    ->label('')
+                                    ->alignEnd()
+                                    ->badge(),
+                            ]),
+    
+                            Section::make([
+                                TextEntry::make('description')
+                                    ->label(''),
+    
+                                InfoSplit::make([
+                                    TextEntry::make('location')
+                                        ->label('')
+                                        ->icon('heroicon-m-map-pin'),
+                                    TextEntry::make('price')
+                                        ->label('')
+                                        ->suffix('€')
+                                        ->color('success'),
+                                ]),
+    
+                                InfoSplit::make([
+                                    TextEntry::make('capacity')
+                                        ->label('Capacity')
+                                        ->icon('heroicon-m-user-group'),
+                                    TextEntry::make('current_attendees')
+                                        ->label('Current Attendees'),
+                                ]),
+    
+                                TextEntry::make('website')
+                                    ->label('Website')
+                                    ->url(fn ($state) => $state)
+                                    ->icon('heroicon-m-link')
+                                    ->iconColor('gray')
+                                    ->color('info')
+                                    ->weight(FontWeight::Bold),
+    
+                                InfoSplit::make([
+                                    TextEntry::make('starts_at')
+                                        ->label('Starts At')
+                                        ->dateTime(),
+                                    TextEntry::make('finish_in')
+                                        ->label('Finish In')
+                                        ->dateTime(),
+                                ]),
+                            ])->aside(),
+                        ]),
+                    ])->columns(2),
+                
+                InfoSplit::make([
+                        RepeatableEntry::make('comments')
+                            ->label('')
+                            ->schema([
+                                InfoSplit::make([
+                                    ImageEntry::make('user.avatar')
+                                        ->label('')
+                                        ->height('5em')
+                                        ->width('5em')
+                                        ->grow(false)
+                                        ->circular()
+                                        ->url(fn (Comment $record): string => route('users.view', ['user' => $record->user_id])),
+                                    TextEntry::make('user.username')
+                                        ->label('')
+                                        ->url(fn (Comment $record): string => route('users.view', ['user' => $record->user_id]))
+                                        ->weight(FontWeight::Bold),
+                                    ])->verticalAlignment(VerticalAlignment::Center),
+                                    TextEntry::make('content')
+                                        ->label('')
+                                        ->grow(),
+    
+                                RepeatableEntry::make('comments')
+                                    ->label('Replies')
+                                    ->schema([
+                                        InfoSplit::make([
+                                            ImageEntry::make('user.avatar')
+                                                ->label('')
+                                                ->height('5em')
+                                                ->width('5em')
+                                                ->grow(false)
+                                                ->circular()
+                                                ->url(fn (Comment $record): string => route('users.view', ['user' => $record->user_id])),
+                                            TextEntry::make('user.username')
+                                                ->label('')
+                                                ->url(fn (Comment $record): string => route('users.view', ['user' => $record->user_id]))
+                                                ->weight(FontWeight::Bold),
+                                        ])->verticalAlignment(VerticalAlignment::Center),
+                                        TextEntry::make('content')
+                                            ->label('')
+                                            ->grow(),
+                                    ])
+                                    ->hidden(fn ($record) => $record->parent_comment_id !== null)
+                                ])
+                                ->hidden(fn ($record) => dd($record->comments[0]) !== null)
+                ])
+            ]);
+    }
+    
     public static function getPages(): array
     {
         return [
