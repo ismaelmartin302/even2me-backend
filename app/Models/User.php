@@ -8,6 +8,7 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,7 +17,7 @@ use Illuminate\Notifications\Notifiable;
 
 use function Filament\Support\is_app_url;
 
-class User extends Authenticatable implements FilamentUser, HasName, HasAvatar
+class User extends Authenticatable implements FilamentUser, HasName, HasAvatar, MustVerifyEmail
 {
     use HasFactory, Notifiable;
 

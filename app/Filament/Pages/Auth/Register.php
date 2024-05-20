@@ -29,9 +29,9 @@ class Register extends AuthRegister
     {
         return TextInput::make('username')
             ->label('User Name')
-            ->alphaNum()
+            ->alphaDash()
             ->required()
-            ->maxLength(50)
+            ->maxLength(40)
             ->unique($this->getUserModel());
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\EmailVerification\EmailVerification;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -30,6 +31,9 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->registration(Register::class)
+            ->passwordReset()
+            ->profile()
+            // ->emailVerification()
             ->colors([
                 'primary' => Color::Amber,
             ])

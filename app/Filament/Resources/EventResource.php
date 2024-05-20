@@ -295,7 +295,6 @@ class EventResource extends Resource
                                     ])
                                     ->hidden(fn ($record) => $record->parent_comment_id !== null)
                                 ])
-                                ->hidden(fn ($record) => dd($record->comments[0]) !== null)
                 ])
             ]);
     }
