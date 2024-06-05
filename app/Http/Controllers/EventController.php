@@ -9,7 +9,7 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::all();
+        $events = Event::with(["comments", "user"])->withCount(["comments", "reposts", "likes"])->get();
         return response()->json($events);
     }
 

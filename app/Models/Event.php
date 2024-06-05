@@ -89,7 +89,7 @@ class Event extends Model
     
     public function likes(): BelongsToMany 
     {
-        return $this->belongsToMany(User::class, 'likes', 'event_id', 'user_id');
+        return $this->belongsToMany(User::class, 'post_likes', 'event_id', 'user_id');
     }
     public function comments(): HasMany 
     {

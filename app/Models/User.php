@@ -128,7 +128,7 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAvatar, 
     }
     public function likedEvents(): BelongsToMany 
     {
-        return $this->belongsToMany(Event::class, 'likes', 'user_id', 'event_id');
+        return $this->belongsToMany(Event::class, 'post_likes', 'user_id', 'event_id');
     }
     public function likedComments(): BelongsToMany 
     {
