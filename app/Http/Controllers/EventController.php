@@ -9,7 +9,16 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::with(["comments", "user"])->withCount(["comments", "reposts", "likes"])->get();
+        $events = Event::with(["comments", "user", "likes"])->withCount(["comments", "likes"])->get();
+
+        // Registro de un solo evento en los logs para depuración
+        if ($events->isNotEmpty()) {
+            $firstEvent = $events->first();
+            error_log('Event ID: ' . $firstEvent->id);
+            error_log('Event Name: ' . $firstEvent->name);
+            // Agrega cualquier otra información que quieras registrar
+        }
+
         return response()->json($events);
     }
 
@@ -36,7 +45,7 @@ class EventController extends Controller
 
     public function show($id)
     {
-        $event = Event::find($id);
+        $event = Event::with(["comments", "user", "likes"])->find($id);
         if ($event) {
             return response()->json($event);
         } else {

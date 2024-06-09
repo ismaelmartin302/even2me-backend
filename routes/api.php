@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FollowerController;
+use App\Http\Controllers\LikeController;
 use Filament\Pages\Auth\Login;
 
 Route::get('/user', function (Request $request) {
@@ -35,6 +36,9 @@ Route::post('/events', [EventController::class, 'store']);
 Route::put('/events/{id}', [EventController::class, 'update']);
 Route::delete('/events/{id}', [EventController::class, 'destroy']);
 Route::get('/events/{id}/comments', [EventController::class, 'getEventComments']);
+
+Route::post('/events/{event}/like', [LikeController::class, 'like']);
+Route::delete('/events/{event}/like', [LikeController::class, 'unlike']);
 
 Route::get('/followers', [FollowerController::class, 'index']);
 Route::get('/followers/{id}', [FollowerController::class, 'show']);

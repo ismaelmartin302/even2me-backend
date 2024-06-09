@@ -128,7 +128,7 @@ class UserController extends Controller
     {
         $user = User::where('username', $username)->first();
         if ($user) {
-            $events = $user->events()->with(['comments', 'likes', 'reposts'])->get();
+            $events = $user->events()->with(['comments', 'user'])->withCount(["comments", "reposts", "likes"])->get();
             return response()->json($events);
         } else {
             return response()->json([
