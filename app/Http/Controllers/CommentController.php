@@ -73,4 +73,9 @@ class CommentController extends Controller
             ], 404);
         }
     }
+    public function getEventComments($eventId)
+    {
+        $comments = Comment::with(['user', 'comments.user'])->where('event_id', $eventId)->whereNull('parent_comment_id')->get();
+        return response()->json($comments);
+    }
 }

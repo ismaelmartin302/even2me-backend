@@ -72,11 +72,9 @@ class UserResource extends Resource
                         FileUpload::make('avatar')
                             ->image()
                             ->maxSize(528)
-                            ->deletable(false)
                             ->avatar(),
                         FileUpload::make('banner')
                             ->image()
-                            ->deletable(false)
                             ->visibility('private')
                             ->maxSize(528),
                     ])->columns(2),

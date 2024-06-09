@@ -112,4 +112,53 @@ class UserController extends Controller
             ], 404);
         }
     }
+    public function showByUsername($username)
+    {
+        $user = User::where('username', $username)->first();
+        if ($user) {
+            return response()->json($user);
+        } else {
+            return response()->json([
+                "message" => "User not found"
+            ], 404);
+        }
+    }
+
+    public function getUserEventsByUsername($username)
+    {
+        $user = User::where('username', $username)->first();
+        if ($user) {
+            $events = $user->events()->with(['comments', 'likes', 'reposts'])->get();
+            return response()->json($events);
+        } else {
+            return response()->json([
+                "message" => "User not found"
+            ], 404);
+        }
+    }
+    public function getUserFollowers($username)
+    {
+        $user = User::where('username', $username)->first();
+        if ($user) {
+            $followers = $user->followers()->with('follower')->get();
+            return response()->json($followers);
+        } else {
+            return response()->json([
+                "message" => "User not found"
+            ], 404);
+        }
+    }
+
+    public function getUserFollowings($username)
+    {
+        $user = User::where('username', $username)->first();
+        if ($user) {
+            $followings = $user->followings()->with('following')->get();
+            return response()->json($followings);
+        } else {
+            return response()->json([
+                "message" => "User not found"
+            ], 404);
+        }
+    }
 }

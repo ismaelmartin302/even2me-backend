@@ -89,4 +89,15 @@ class EventController extends Controller
             ], 404);
         }
     }
+    public function getEventComments($id)
+    {
+        $event = Event::with('comments.user')->find($id);
+        if ($event) {
+            return response()->json($event->comments);
+        } else {
+            return response()->json([
+                "message" => "Event not found"
+            ], 404);
+        }
+    }
 }
