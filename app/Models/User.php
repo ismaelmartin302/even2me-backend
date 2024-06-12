@@ -104,7 +104,8 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAvatar, 
     public function canAccessFilament(): bool
     {
         // return str_ends_with($this->email, '@even2me.com') && $this->hasVerifiedEmail() && ($this->type === 'moderator' || $this-type === 'admin'); // <- Este es el que hay que usar en produccion
-        return $this->type === 'moderator' || $this->type === 'admin';
+        // return $this->type === 'moderator' || $this->type === 'admin';
+        return true;
     }
 
 
