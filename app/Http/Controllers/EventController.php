@@ -45,7 +45,7 @@ class EventController extends Controller
 
     public function show($id)
     {
-        $event = Event::with(["comments", "user", "likes"])->find($id);
+        $event = Event::with(["comments", "user", "likes"])->withCount(["comments", "likes"])->find($id);
         if ($event) {
             return response()->json($event);
         } else {
