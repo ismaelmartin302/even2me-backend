@@ -45,7 +45,7 @@ class EventController extends Controller
 
     public function show($id)
     {
-        $event = Event::with(["comments", "user", "likes"])->withCount(["comments", "likes"])->find($id);
+        $event = Event::with(["comments.user", "user", "likes"])->withCount(["comments", "likes"])->find($id);
         if ($event) {
             return response()->json($event);
         } else {
@@ -86,16 +86,17 @@ class EventController extends Controller
 
     public function destroy($id)
     {
-        if (Event::where('id', $id)->exists()) {
-            $event = Event::find($id);
+        $event = Event::find($id);
+        error_log($event);
+        if (!$event) {
+            return response()->json(['message' => 'Event not found'], 404);
+        }
+    
+        try {
             $event->delete();
-            return response()->json([
-                "message" => "Event deleted successfully"
-            ], 200);
-        } else {
-            return response()->json([
-                "message" => "Event not found"
-            ], 404);
+            return response()->json(['message' => 'Event deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error deleting event' . $e], 500);
         }
     }
     public function getEventComments($id)
