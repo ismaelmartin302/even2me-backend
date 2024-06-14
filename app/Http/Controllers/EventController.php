@@ -9,7 +9,7 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::with(["comments", "user", "likes"])->withCount(["comments", "likes"])->get();
+        $events = Event::with(["comments", "user", "likes"])->withCount(["comments", "likes"])->orderby('starts_at', 'asc')->get();
 
         // Registro de un solo evento en los logs para depuración
         if ($events->isNotEmpty()) {
