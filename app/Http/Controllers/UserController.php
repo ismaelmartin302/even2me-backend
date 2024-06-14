@@ -70,7 +70,11 @@ class UserController extends Controller
     {
         if (User::where('id', $id)->exists()) {
             $user = User::find($id);
-
+            // error_log(print_r($request->all(), true));
+            error_log($request);
+            error_log($request->get('username'));
+            error_log($request->input('username'));
+            error_log($request->username);
             $user->username = $request->has('username') ? $request->username : $user->username;
             $user->nickname = $request->has('nickname') ? $request->nickname : $user->nickname;
             $user->email = $request->has('email') ? $request->email : $user->email;
@@ -79,14 +83,21 @@ class UserController extends Controller
             $user->location = $request->has('location') ? $request->location : $user->location;
             $user->website = $request->has('website') ? $request->website : $user->website;
             $user->birthday = $request->has('birthday') ? $request->birthday : $user->birthday;
-            $user->avatar = $request->has('avatar') ? $request->avatar : $user->avatar;
-            $user->banner = $request->has('banner') ? $request->banner : $user->banner;
             $user->type = $request->has('type') ? $request->type : $user->type;
-
+    
+            if ($request->hasFile('avatar')) {
+                $avatarPath = $request->file('avatar')->store('avatars', 'public');
+                $user->avatar = $avatarPath;
+            }
+            if ($request->hasFile('banner')) {
+                $bannerPath = $request->file('banner')->store('banners', 'public');
+                $user->banner = $bannerPath;
+            }
+    
             if ($request->has('password')) {
                 $user->password = Hash::make($request->password);
             }
-
+    
             $user->save();
             return response()->json([
                 "message" => "User updated successfully"
@@ -96,7 +107,7 @@ class UserController extends Controller
                 "message" => "User not found"
             ], 404);
         }
-    }
+    }    
 
     public function destroy($id)
     {
