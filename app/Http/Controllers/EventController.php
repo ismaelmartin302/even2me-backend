@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
@@ -34,10 +35,14 @@ class EventController extends Controller
         $event->capacity = $request->capacity;
         $event->current_attendees = $request->current_attendees;
         $event->category = $request->category;
-        $event->picture = $request->picture;
         $event->website = $request->website;
         $event->starts_at = $request->starts_at;
         $event->finish_in = $request->finish_in;
+
+        if ($request->hasFile('picture')) {
+            $path = $request->file('picture')->store('public');
+            $event->picture = str_replace('public/', '', $path);
+        }
 
         $event->save();
         return response()->json($event, 201);
@@ -68,11 +73,15 @@ class EventController extends Controller
             $event->capacity = $request->has('capacity') ? $request->capacity : $event->capacity;
             $event->current_attendees = $request->has('current_attendees') ? $request->current_attendees : $event->current_attendees;
             $event->category = $request->has('category') ? $request->category : $event->category;
-            $event->picture = $request->has('picture') ? $request->picture : $event->picture;
             $event->website = $request->has('website') ? $request->website : $event->website;
             $event->starts_at = $request->has('starts_at') ? $request->starts_at : $event->starts_at;
             $event->finish_in = $request->has('finish_in') ? $request->finish_in : $event->finish_in;
 
+            if ($request->hasFile('picture')) {
+                $path = $request->file('picture')->store('public');
+                $event->picture = str_replace('public/', '', $path);
+            }
+            
             $event->save();
             return response()->json([
                 "message" => "Event updated successfully"
