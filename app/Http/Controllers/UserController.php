@@ -179,5 +179,15 @@ class UserController extends Controller
     $users = User::where('username', 'LIKE', "%$query%")->orWhere('nickname', 'LIKE', "%$query%")->get();
     return response()->json($users);
 }
+public function getUserLikes($id)
+{
+    $user = User::find($id);
+    if ($user) {
+        $likes = $user->likedEvents()->with('user')->get();
+        return response()->json($likes);
+    } else {
+        return response()->json(["message" => "User not found"], 404);
+    }
+}
 
 }

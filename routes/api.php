@@ -30,6 +30,7 @@ Route::get('/users/nick/{username}/events', [UserController::class, 'getUserEven
 Route::get('/users/nick/{username}/followers', [UserController::class, 'getUserFollowers']);
 Route::get('/users/nick/{username}/followings', [UserController::class, 'getUserFollowings']);
 Route::get('/user/search', [UserController::class, 'search']);
+Route::get('users/{id}/likes', [UserController::class, 'getUserLikes']);
 
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/events/{id}', [EventController::class, 'show']);
