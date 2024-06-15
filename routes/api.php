@@ -29,6 +29,7 @@ Route::get('/users/nick/{username}', [UserController::class, 'showByUsername']);
 Route::get('/users/nick/{username}/events', [UserController::class, 'getUserEventsByUsername']);
 Route::get('/users/nick/{username}/followers', [UserController::class, 'getUserFollowers']);
 Route::get('/users/nick/{username}/followings', [UserController::class, 'getUserFollowings']);
+Route::get('/user/search', [UserController::class, 'search']);
 
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/events/{id}', [EventController::class, 'show']);
@@ -36,6 +37,7 @@ Route::post('/events', [EventController::class, 'store']);
 Route::put('/events/{id}', [EventController::class, 'update']);
 Route::delete('/events/{id}', [EventController::class, 'destroy']);
 Route::get('/events/{id}/comments', [EventController::class, 'getEventComments']);
+Route::get('/event/search', [EventController::class, 'search']);
 
 Route::post('/events/{event}/like', [LikeController::class, 'like']);
 Route::delete('/events/{event}/like', [LikeController::class, 'unlike']);

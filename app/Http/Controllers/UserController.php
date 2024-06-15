@@ -172,4 +172,12 @@ class UserController extends Controller
             ], 404);
         }
     }
+
+    public function search(Request $request)
+{
+    $query = $request->input('query');
+    $users = User::where('username', 'LIKE', "%$query%")->orWhere('nickname', 'LIKE', "%$query%")->get();
+    return response()->json($users);
+}
+
 }

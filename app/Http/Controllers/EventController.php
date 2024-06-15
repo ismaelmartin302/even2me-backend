@@ -119,4 +119,11 @@ class EventController extends Controller
             ], 404);
         }
     }
+    public function search(Request $request)
+{
+    $query = $request->input('query');
+    $events = Event::where('name', 'LIKE', "%$query%")->orWhere('description', 'LIKE', "%$query%")->get();
+    return response()->json($events);
+}
+
 }
