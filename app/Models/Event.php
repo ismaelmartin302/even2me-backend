@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Scopes\ExpiredEventScope;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -77,6 +79,13 @@ class Event extends Model
             return $value;
         }
     }
+    protected static function booted()
+    {
+        static::addGlobalScope(new ExpiredEventScope);
+        static::retrieved(function ($event) {
+            static::where('starts_at', '<', Carbon::now())->delete();
+        });
+    }
 
     public function tags(): BelongsToMany 
     {
@@ -89,7 +98,7 @@ class Event extends Model
     
     public function likes(): BelongsToMany 
     {
-        return $this->belongsToMany(User::class, 'likes', 'event_id', 'user_id');
+        return $this->belongsToMany(User::class, 'post_likes', 'event_id', 'user_id');
     }
     public function comments(): HasMany 
     {

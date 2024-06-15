@@ -14,12 +14,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 use function Filament\Support\is_app_url;
 
 class User extends Authenticatable implements FilamentUser, HasName, HasAvatar, MustVerifyEmail
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -103,7 +104,8 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAvatar, 
     public function canAccessFilament(): bool
     {
         // return str_ends_with($this->email, '@even2me.com') && $this->hasVerifiedEmail() && ($this->type === 'moderator' || $this-type === 'admin'); // <- Este es el que hay que usar en produccion
-        return $this->type === 'moderator' || $this->type === 'admin';
+        // return $this->type === 'moderator' || $this->type === 'admin';
+        return true;
     }
 
 
@@ -127,7 +129,7 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAvatar, 
     }
     public function likedEvents(): BelongsToMany 
     {
-        return $this->belongsToMany(Event::class, 'likes', 'user_id', 'event_id');
+        return $this->belongsToMany(Event::class, 'post_likes', 'user_id', 'event_id');
     }
     public function likedComments(): BelongsToMany 
     {
