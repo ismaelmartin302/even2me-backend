@@ -14,7 +14,14 @@ Route::get('/admin/users/{user}')->name('users.view');
 Route::get('/run-migration', function() {
 
     Artisan::call('optimize:clear');
-    Artisan::call('migrate:refresh --seed');
+    Artisan::call('migrate:refresh');
 
     return "Migrations executed successfully";
+});
+Route::get('/run-seeder', function() {
+
+    Artisan::call('optimize:clear');
+    Artisan::call('db:seed');
+
+    return "Seed successfully";
 });
