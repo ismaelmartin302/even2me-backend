@@ -14,7 +14,7 @@ Route::get('/admin/users/{user}')->name('users.view');
 Route::get('/run-migration', function() {
 
     Artisan::call('optimize:clear');
-    Artisan::call('migrate:fresh --sedd');
+    Artisan::call('migrate:fresh --seed');
 
     return "Migrations executed successfully";
 });
