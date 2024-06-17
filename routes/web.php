@@ -15,7 +15,6 @@ Route::get('/run-migration', function() {
 
     Artisan::call('optimize:clear');
     Artisan::call('migrate:refresh');
-    Artisan::call('storage:link');
 
     return "Migrations executed successfully";
 });
